@@ -1,6 +1,6 @@
 # MealPrep Month Planner
 
-Plan a balanced month of meals from your own food library, then export or print clean weekly and monthly views. This project is built by [Teda.dev](https://teda.dev), the AI app builder for everyday problems, so you can get a production-ready planner without any setup.
+Plan a balanced month of meals from your own food library, then export or print clean weekly and monthly views. This project is built by [Teda.dev](https://teda.dev), the AI app builder for everyday problems, so you can get a production-ready planner without any setup. For Live view of the application visit: https://marveldev.github.io/mealprep-month-planner/app.html
 
 ## Features
 - Add foods and tag them for breakfast, lunch, dinner, and dessert
