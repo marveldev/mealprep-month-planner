@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MealPrep Planner App</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-sand text-slate-800 antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:text-slate-800 focus:px-3 focus:py-2 focus:rounded">Skip to content</a>
+  <header class="border-b border-slate-200 bg-white/80 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/logo.svg" alt="MealPrep logo" class="h-8 w-8"/>
+        <span class="font-semibold tracking-tight text-slate-900">MealPrep Month</span>
+      </a>
+      <nav class="flex items-center gap-2">
+        <button id="nav-month" class="tab-btn aria-selected btn-ghost" aria-controls="view-month" aria-selected="true">Month</button>
+        <button id="nav-week" class="tab-btn btn-ghost" aria-controls="view-week" aria-selected="false">Week</button>
+        <a href="index.html" class="btn-secondary ml-2">Back</a>
+      </nav>
+    </div>
+  </header>
+
+  <style type="text/tailwindcss" data-teda="tailwind-apply">
+    @layer components {
+      .btn-primary { @apply inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-amber-500 text-white px-4 py-2.5 text-sm font-semibold shadow-sm hover:bg-amber-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 transition; }
+      .btn-secondary { @apply inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-white text-slate-800 border border-slate-200 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 transition; }
+      .btn-danger { @apply inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-slate-900 text-white px-4 py-2.5 text-sm font-semibold shadow-sm hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 transition; }
+      .input { @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-300; }
+      .select { @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-300; }
+      .label { @apply text-xs font-medium text-slate-600; }
+      .chip { @apply inline-flex items-center gap-1 rounded-full bg-slate-900/5 px-2.5 py-1 text-xs text-slate-700; }
+      .pill { @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-slate-900/5 text-slate-700; }
+      .card { @apply rounded-2xl bg-white shadow-lg ring-1 ring-slate-100; }
+      .section-title { @apply text-sm font-semibold tracking-wide text-slate-900; }
+    }
+  </style>
+
+  <main id="main" class="mx-auto max-w-7xl px-6 py-6 md:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 space-y-6">
+        <div class="card p-5">
+          <h2 class="section-title">Your food library</h2>
+          <form id="food-form" class="mt-3 space-y-3" aria-label="Add a food to your library">
+            <div>
+              <label class="label" for="food-name">Food name</label>
+              <input id="food-name" class="input" type="text" placeholder="eg. Oatmeal with berries" required>
+            </div>
+            <div>
+              <label class="label">Fits these meals</label>
+              <div class="flex flex-wrap gap-2 mt-1">
+                <label class="chip"><input type="checkbox" name="mealType" value="breakfast" class="mr-1"> Breakfast</label>
+                <label class="chip"><input type="checkbox" name="mealType" value="lunch" class="mr-1"> Lunch</label>
+                <label class="chip"><input type="checkbox" name="mealType" value="dinner" class="mr-1"> Dinner</label>
+                <label class="chip"><input type="checkbox" name="mealType" value="dessert" class="mr-1"> Dessert</label>
+              </div>
+            </div>
+            <div>
+              <label class="label">Tags</label>
+              <div class="flex flex-wrap gap-2 mt-1">
+                <label class="chip"><input type="checkbox" name="tag" value="protein" class="mr-1"> Protein</label>
+                <label class="chip"><input type="checkbox" name="tag" value="veggie" class="mr-1"> Veggie</label>
+                <label class="chip"><input type="checkbox" name="tag" value="carb" class="mr-1"> Carb</label>
+                <label class="chip"><input type="checkbox" name="tag" value="fruit" class="mr-1"> Fruit</label>
+                <label class="chip"><input type="checkbox" name="tag" value="sweet" class="mr-1"> Sweet</label>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 pt-1">
+              <button type="submit" class="btn-primary min-w-[140px]">Add food</button>
+              <button type="button" id="clear-foods" class="btn-secondary">Clear all</button>
+            </div>
+          </form>
+          <div class="mt-5">
+            <h3 class="text-sm font-semibold text-slate-700">Saved foods</h3>
+            <div id="food-list" class="mt-3 space-y-2" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <h2 class="section-title">Custom suggestions</h2>
+          <p class="mt-1 text-xs text-slate-600">Tap to add into your library.</p>
+          <div id="suggestions" class="mt-3 flex flex-wrap gap-2"></div>
+          <div class="mt-3 flex items-center gap-2">
+            <button id="suggest-more" class="btn-secondary">More ideas</button>
+            <button id="add-desserts" class="btn-secondary">Add dessert pack</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 space-y-6">
+        <div class="card p-5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div class="w-full md:w-auto">
+              <h2 class="section-title">Planner controls</h2>
+              <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="start-date" class="label">Start date</label>
+                  <input id="start-date" type="date" class="input" />
+                </div>
+                <div>
+                  <label class="label">Weeks</label>
+                  <select id="weeks-count" class="select">
+                    <option value="4">4 weeks</option>
+                    <option value="3">3 weeks</option>
+                    <option value="2">2 weeks</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="label">Options</label>
+                  <label class="chip"><input id="include-dessert" type="checkbox" checked class="mr-1"> Include dessert</label>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="generate-month" class="btn-primary">Generate month</button>
+              <button id="regen-week" class="btn-secondary">Regenerate week</button>
+              <button id="clear-plan" class="btn-danger">Clear plan</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="pill">Breakfast</span>
+              <span class="pill">Lunch</span>
+              <span class="pill">Dinner</span>
+              <span class="pill">Dessert</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="export-week" class="btn-secondary">Export week CSV</button>
+              <button id="export-month" class="btn-secondary">Export month CSV</button>
+              <button id="print-week" class="btn-secondary">Print week</button>
+              <button id="print-month" class="btn-secondary">Print month</button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div role="tablist" aria-label="View switch" class="flex gap-2">
+              <button id="tab-month" role="tab" aria-selected="true" class="btn-secondary">Month view</button>
+              <button id="tab-week" role="tab" aria-selected="false" class="btn-secondary">Week view</button>
+              <select id="week-picker" class="select ml-auto w-40" aria-label="Select week">
+                <option value="0">Week 1</option>
+                <option value="1">Week 2</option>
+                <option value="2">Week 3</option>
+                <option value="3">Week 4</option>
+              </select>
+            </div>
+
+            <div id="view-month" class="mt-4"></div>
+            <div id="view-week" class="mt-4 hidden"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 pointer-events-none z-50 hidden">
+    <div class="rounded-full bg-slate-900 text-white text-sm px-4 py-2 shadow-lg">Saved</div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="scripts/helpers.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+/* Global styles and custom rules (no Tailwind directives here) */
+:root {
+  --sand: #f8f5f2;
+  --ink: #0f172a;
+  --accent: #f59e0b;
+}
+
+html { scroll-behavior: smooth; }
+body.bg-sand { background-color: var(--sand); }
+
+.hero-surface { position: relative; }
+.pattern-dots {
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#0f172a0d 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* Subtle motion for cards */
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: box-shadow .2s ease, transform .2s ease; }
+}
+
+/* Food list item */
+.food-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid #e5e7eb; border-radius:12px; background:#fff; }
+.food-name { font-weight:600; color:#0f172a; }
+.food-meta { font-size:12px; color:#475569; display:flex; gap:6px; flex-wrap:wrap; }
+
+/* Planner cells */
+.plan-grid { display:grid; grid-template-columns: repeat(7, minmax(180px, 1fr)); gap:12px; overflow-x:auto; padding-bottom:8px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.plan-col { border:1px solid #e5e7eb; background:#fff; border-radius:14px; padding:10px; min-height:160px; overflow:hidden; scroll-snap-align:start; }
+.plan-col h4 { font-weight:700; font-size:13px; color:#0f172a; margin-bottom:8px; }
+.meal-row { display:flex; align-items:center; gap:6px; margin:6px 0; }
+.meal-label { font-size:11px; font-weight:600; color:#475569; width:72px; flex:0 0 auto; }
+.meal-value { font-size:13px; color:#0f172a; font-weight:500; word-break:break-word; overflow-wrap:anywhere; }
+
+/* Meal type tints */
+:root {
+  --meal-breakfast-bg: #fef3c7; /* amber-100 */
+  --meal-breakfast-border: #f59e0b; /* amber-500 */
+  --meal-lunch-bg: #dbeafe; /* blue-100 */
+  --meal-lunch-border: #3b82f6; /* blue-500 */
+  --meal-dinner-bg: #dcfce7; /* emerald-100 */
+  --meal-dinner-border: #10b981; /* emerald-500 */
+  --meal-dessert-bg: #fce7f3; /* pink-100 */
+  --meal-dessert-border: #ec4899; /* pink-500 */
+}
+
+.meal-row.meal-breakfast { background: var(--meal-breakfast-bg); border-left: 4px solid var(--meal-breakfast-border); border-radius: 10px; padding: 6px 8px; }
+.meal-row.meal-lunch { background: var(--meal-lunch-bg); border-left: 4px solid var(--meal-lunch-border); border-radius: 10px; padding: 6px 8px; }
+.meal-row.meal-dinner { background: var(--meal-dinner-bg); border-left: 4px solid var(--meal-dinner-border); border-radius: 10px; padding: 6px 8px; }
+.meal-row.meal-dessert { background: var(--meal-dessert-bg); border-left: 4px solid var(--meal-dessert-border); border-radius: 10px; padding: 6px 8px; }
+/* Week list */
+.week-list { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px; }
+.week-day { border:1px solid #e5e7eb; background:#fff; border-radius:14px; padding:10px; }
+.week-day h5 { font-weight:700; font-size:14px; margin-bottom:6px; color:#0f172a; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .meal-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .meal-label { width: auto; }
+  /* Keep 7 fixed columns but enable comfortable card width on small screens */
+  .plan-grid { grid-template-columns: repeat(7, minmax(220px, 1fr)); }
+}
+/* Tabs */
+.tab-btn[aria-selected="true"], [role="tab"][aria-selected="true"] { border-color:#0f172a; }
+
+/* Toast */
+#toast.show { display:block; animation: fadeSlide 2.5s ease forwards; }
+@keyframes fadeSlide { 0%{opacity:0; transform:translate(-50%, 8px);} 15%{opacity:1; transform:translate(-50%, 0);} 80%{opacity:1;} 100%{opacity:0; transform:translate(-50%, 8px);} }
+
+/* Print styles */
+@media print {
+  header, #toast, #food-form, #suggestions, #suggest-more, #add-desserts, #clear-plan, #clear-foods, nav, [role="tab"], #week-picker, #export-week, #export-month, #print-week, #print-month, #generate-month, #regen-week { display: none !important; }
+  body { background: #fff !important; }
+  .plan-col, .week-day { break-inside: avoid; }
+
+  /* Remove color fills for print to save ink */
+  .meal-row.meal-breakfast,
+  .meal-row.meal-lunch,
+  .meal-row.meal-dinner,
+  .meal-row.meal-dessert { background: transparent !important; border-left-color: #e5e7eb !important; }
+  .card { box-shadow: none !important; }
+}
+
+/* Print scoping classes set by JS */
+body.print-week [data-week]{ display:none; }
+body.print-week [data-week="1"].show-print-week-1,
+body.print-week [data-week="2"].show-print-week-2,
+body.print-week [data-week="3"].show-print-week-3,
+body.print-week [data-week="4"].show-print-week-4 { display:block; }
+
+/* Accessibility focus visible tweaks */
+:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
